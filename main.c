@@ -69,7 +69,7 @@ int16_t vbat = 0;
 bool pll_lock_failed;
 
 
-static THD_WORKING_AREA(waThread1, 640);
+static THD_WORKING_AREA(waThread1, 2048);
 static THD_FUNCTION(Thread1, arg)
 {
     chRegSetThreadName("sweep");
@@ -93,7 +93,6 @@ static THD_FUNCTION(Thread1, arg)
         }
 
         chMtxLock(&mutex_sweep);
-
         ui_process();
 
         if (sweep_enabled) {
@@ -669,7 +668,7 @@ config_t config = {
   .checksum =          0
 };
 
-properties_t current_props = {
+properties_t volatile current_props = {
   .magic =              CONFIG_MAGIC,
   ._frequency0 =        50000, // start = 50kHz
   ._frequency1 =        900000000, // end = 900MHz
@@ -693,7 +692,7 @@ properties_t current_props = {
   ._velocity_factor =     70,
   .checksum =              0
 };
-properties_t *active_props = &current_props;
+volatile properties_t *active_props = &current_props;
 
 static void ensure_edit_config(void)
 {
@@ -2152,7 +2151,7 @@ static void cmd_vbat_offset(BaseSequentialStream *chp, int argc, char *argv[])
     config.vbat_offset = (int16_t)offset;
 }
 
-static THD_WORKING_AREA(waThread2, /* cmd_* max stack size + alpha */510 + 32);
+static THD_WORKING_AREA(waThread2, /* cmd_* max stack size + alpha 510 + 32 */ 2048);
 
 static const ShellCommand commands[] =
 {
@@ -2235,104 +2234,78 @@ int main(void)
     chMtxObjectInit(&mutex_sweep);
     chMtxObjectInit(&mutex_ili9341);
 
-/*
-      * SPI LCD Initialize
-      */
-     ili9341_init();
-     show_logo();
-     /* restore config */
-       config_recall();
+    /* restore config */
+    config_recall();
 
-       dac1cfg1.init = config.dac_value;
-       /*
-        * Starting DAC1 driver, setting up the output pin as analog as suggested
-        * by the Reference Manual.
-        */
-       dacStart(&DACD2, &dac1cfg1);
+    dac1cfg1.init = config.dac_value;
+    /*
+     * Starting DAC1 driver, setting up the output pin as analog as suggested
+     * by the Reference Manual.
+     */
+    dacStart(&DACD2, &dac1cfg1);
 
-    //palSetPadMode(GPIOB, 8, PAL_MODE_ALTERNATE(1) | PAL_STM32_OTYPE_OPENDRAIN);
-    //palSetPadMode(GPIOB, 9, PAL_MODE_ALTERNATE(1) | PAL_STM32_OTYPE_OPENDRAIN);
-    i2cStart(&I2CD1, &i2ccfg);
-    while (!si5351_init()) {
-        ili9341_drawstring_size("error: si5351_init failed", 0, 0, RGBHEX(0xff0000), 0x0000, 2);
-    }
+    /*
+     * SPI LCD Initialize
+     */
+    ili9341_init();
+    show_logo();
 
-    // MCO on PA8
-    //palSetPadMode(GPIOA, 8, PAL_MODE_ALTERNATE(0));
-  /*
-   * Initializes a serial-over-USB CDC driver.
-   */
-    sduObjectInit(&SDU1);
-    sduStart(&SDU1, &serusbcfg);
-
-  /*
-   * Activates the USB driver and then the USB bus pull-up on D+.
-   * Note, a delay is inserted in order to not have to disconnect the cable
-   * after a reset.
-   */
-    usbDisconnectBus(serusbcfg.usbp);
-    chThdSleepMilliseconds(100);
-    usbStart(serusbcfg.usbp, &usbcfg);
-    usbConnectBus(serusbcfg.usbp);
-
-  /*
-   * Initialize graph plotting
-   */
-  plot_init();
-
-    chMtxObjectInit(&mutex_sweep);
-    chMtxObjectInit(&mutex_ili9341);
-
-    // MCO on PA8
-    //palSetPadMode(GPIOA, 8, PAL_MODE_ALTERNATE(0));
-
-  /* initial frequencies */
-  update_frequencies();
-
-  /* restore frequencies and calibration properties from flash memory */
-  if (config.default_loadcal >= 0)
-    caldata_recall(config.default_loadcal);
-
-    //palSetPadMode(GPIOB, 8, PAL_MODE_ALTERNATE(1) | PAL_STM32_OTYPE_OPENDRAIN);
-    //palSetPadMode(GPIOB, 9, PAL_MODE_ALTERNATE(1) | PAL_STM32_OTYPE_OPENDRAIN);
+    /*
+     * I2C & SI5351 Initialize
+     */
     i2cStart(&I2CD1, &i2ccfg);
     while (!si5351_init()) {
         ili9341_drawstring_size("error: si5351_init failed", 0, 0, RGBHEX(0xff0000), 0x0000, 2);
     }
 
     /*
-    * Initialize graph plotting
-    */
+     * Initializes a serial-over-USB CDC driver.
+     */
+    sduObjectInit(&SDU1);
+    sduStart(&SDU1, &serusbcfg);
+
+    /*
+     * Activates the USB driver and then the USB bus pull-up on D+.
+     * Note, a delay is inserted in order to not have to disconnect the cable
+     * after a reset.
+     */
+    usbDisconnectBus(serusbcfg.usbp);
+    chThdSleepMilliseconds(100);
+    usbStart(serusbcfg.usbp, &usbcfg);
+    usbConnectBus(serusbcfg.usbp);
+
+    /*
+     * Initialize graph plotting
+     */
     plot_init();
+
+    /* restore frequencies and calibration properties from flash memory */
+    if (config.default_loadcal >= 0)
+        caldata_recall(config.default_loadcal);
 
     /* initial frequencies */
     update_frequencies();
 
-    /* restore frequencies and calibration properties from flash memory */
-    if (config.default_loadcal >= 0)
-      caldata_recall(config.default_loadcal);
+    // redraw_frame();
+    draw_frequencies();
+    draw_cal_status();
 
-  /*
-   * I2S Initialize
-   */
-  tlv320aic3204_init();
-  i2sInit();
-  i2sObjectInit(&I2SD2);
-  i2sStart(&I2SD2, &i2sconfig);
-  i2sStartExchange(&I2SD2);
+    /*
+     * I2S Initialize
+     */
+    tlv320aic3204_init();
+    i2sInit();
+    i2sObjectInit(&I2SD2);
+    i2sStart(&I2SD2, &i2sconfig);
+    i2sStartExchange(&I2SD2);
 
-  ui_init();
+    ui_init();
 
-  /*
-   * Shell manager initialization.
-   */
+    /*
+     * Shell manager initialization.
+     */
     shellInit();
 
-
-    // redraw_frame();
-     draw_frequencies();
-     draw_cal_status();
-	 
     chThdSetPriority(HIGHPRIO);
     chThdCreateStatic(waThread1, sizeof(waThread1), NORMALPRIO, Thread1, NULL);
 
@@ -2348,8 +2321,64 @@ int main(void)
     }
 }
 
+#if 0
 // see also ch.dbg.panic_msg
 void HardFault_Handler(void)
 {
-    while (true) {}
+	uint32_t psp = __get_PSP(); 
+	while (true) {}
 }
+
+#else
+
+#if 0
+/* The prototype shows it is a naked function - in effect this is just an assembly function. */
+static void HardFault_Handler( void ) __attribute__( ( naked ) );
+#endif
+
+/* The fault handler implementation calls a function called prvGetRegistersFromStack(). */
+// static
+void HardFault_Handler(void)
+{
+    __asm volatile
+    (
+        " tst lr, #4                                                \n"
+        " ite eq                                                    \n"
+        " mrseq r0, msp                                             \n"
+        " mrsne r0, psp                                             \n"
+        " ldr r1, [r0, #24]                                         \n"
+        " ldr r2, handler2_address_const                            \n"
+        " bx r2                                                     \n"
+        " handler2_address_const: .word prvGetRegistersFromStack    \n"
+    );
+}
+
+void prvGetRegistersFromStack( uint32_t *pulFaultStackAddress )
+{
+/* These are volatile to try and prevent the compiler/linker optimising them
+away as the variables never actually get used.  If the debugger won't show the
+values of the variables, make them global my moving their declaration outside
+of this function. */
+volatile uint32_t r0;
+volatile uint32_t r1;
+volatile uint32_t r2;
+volatile uint32_t r3;
+volatile uint32_t r12;
+volatile uint32_t lr; /* Link register. */
+volatile uint32_t pc; /* Program counter. */
+volatile uint32_t psr;/* Program status register. */
+
+    r0 = pulFaultStackAddress[ 0 ];
+    r1 = pulFaultStackAddress[ 1 ];
+    r2 = pulFaultStackAddress[ 2 ];
+    r3 = pulFaultStackAddress[ 3 ];
+
+    r12 = pulFaultStackAddress[ 4 ];
+    lr = pulFaultStackAddress[ 5 ];
+    pc = pulFaultStackAddress[ 6 ];
+    psr = pulFaultStackAddress[ 7 ];
+
+    /* When the following line is hit, the variables contain the register values. */
+    for( ;; );
+}
+#endif

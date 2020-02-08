@@ -102,7 +102,7 @@ static volatile ADCConversionGroup adcgrpcfgXY = {
 void adc_init(void)
 {
 #ifdef NANOVNA_F303
-  // adcStart(&ADCD2, NULL);
+  adcStart(&ADCD2, NULL);
   adcStart(&ADCD1, NULL);
   #ifdef F303_ADC_VREF_ALWAYS_ON
   adcSTM32EnableVBAT(&ADCD1);
@@ -141,9 +141,10 @@ uint16_t adc_single_read(ADC_TypeDef *adc, uint32_t chsel)
 {
   /* ADC setup */
 #ifdef NANOVNA_F303
-  adcStart(&ADCD2, NULL);
+  //adcStart(&ADCD2, NULL);
   adcgrpcfgXY.sqr[0] = ADC_SQR1_SQ1_N(chsel);
   adcConvert(&ADCD2, &adcgrpcfgXY, samples, 1);
+  //adcStop(&ADCD2);
   return(samples[0]); 
 #else
   adc->ISR    = adc->ISR;
@@ -222,7 +223,13 @@ void adc_start_analog_watchdogd(ADC_TypeDef *adc, uint32_t chsel)
   uint32_t cfgr1;
 
 #ifdef NANOVNA_F303
-  adcStart(&ADCD2, NULL);
+  if ((ADCD2.state == ADC_STOP) || (ADCD2.state == ADC_READY)) {
+    adcStart(&ADCD2, NULL);
+  }
+  if (ADCD2.state == ADC_ACTIVE) {
+    return;
+    //adcStopConversion(&ADCD2);
+  }
   adcgrpcfgTouch.sqr[0] = ADC_SQR1_SQ1_N(chsel);
   ADC2->CFGR  &= ~ADC_CFGR_DMAEN; // No need to do DMA
   adcStartConversion(&ADCD2, &adcgrpcfgTouch, samplesTouch, ADC_GRP_BUF_DEPTH_TOUCH);
@@ -250,17 +257,7 @@ void adc_start_analog_watchdogd(ADC_TypeDef *adc, uint32_t chsel)
 void adc_stop(ADC_TypeDef *adc)
 {
 #ifdef NANOVNA_F303
- #if 1
   adcStopConversion(&ADCD2);
- #else
-  if (ADC2->CR & ADC_CR_ADEN) {
-    if (ADC2->CR & ADC_CR_ADSTART) {
-      ADC2->CR |= ADC_CR_ADSTP;
-      while (ADC2->CR & ADC_CR_ADSTP)
-        ;
-    }
-  }
- #endif
 #else
   if (adc->CR & ADC_CR_ADEN) {
     if (adc->CR & ADC_CR_ADSTART) {

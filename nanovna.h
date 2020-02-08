@@ -396,8 +396,8 @@ typedef struct {
 #define CONFIG_MAGIC 0x434f4e45 /* 'CONF' */
 
 extern int16_t lastsaveid;
-extern properties_t *active_props;
-extern properties_t current_props;
+extern volatile properties_t *active_props;
+extern volatile properties_t current_props;
 
 extern int8_t previous_marker;
 

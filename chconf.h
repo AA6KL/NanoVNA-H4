@@ -80,8 +80,7 @@
  *          this value.
  */
 #if !defined(CH_CFG_ST_TIMEDELTA)
-#define CH_CFG_ST_TIMEDELTA                 0
-//#define CH_CFG_ST_TIMEDELTA                 2
+#define CH_CFG_ST_TIMEDELTA                 2
 #endif
 
 /** @} */
@@ -173,7 +172,7 @@
  * @note    The default is @p TRUE.
  */
 #if !defined(CH_CFG_USE_TM)
-#define CH_CFG_USE_TM                       FALSE
+#define CH_CFG_USE_TM                       TRUE
 #endif
 
 /**
@@ -204,7 +203,7 @@
  * @note    The default is @p TRUE.
  */
 #if !defined(CH_CFG_USE_SEMAPHORES)
-#define CH_CFG_USE_SEMAPHORES               FALSE
+#define CH_CFG_USE_SEMAPHORES               TRUE
 #endif
 
 /**
@@ -251,7 +250,7 @@
  * @note    Requires @p CH_CFG_USE_MUTEXES.
  */
 #if !defined(CH_CFG_USE_CONDVARS)
-#define CH_CFG_USE_CONDVARS                 FALSE
+#define CH_CFG_USE_CONDVARS                 TRUE
 #endif
 
 /**
@@ -263,7 +262,7 @@
  * @note    Requires @p CH_CFG_USE_CONDVARS.
  */
 #if !defined(CH_CFG_USE_CONDVARS_TIMEOUT)
-#define CH_CFG_USE_CONDVARS_TIMEOUT         FALSE
+#define CH_CFG_USE_CONDVARS_TIMEOUT         TRUE
 #endif
 
 /**
@@ -296,7 +295,7 @@
  * @note    The default is @p TRUE.
  */
 #if !defined(CH_CFG_USE_MESSAGES)
-#define CH_CFG_USE_MESSAGES                 FALSE
+#define CH_CFG_USE_MESSAGES                 TRUE
 #endif
 
 /**
@@ -321,7 +320,7 @@
  * @note    Requires @p CH_CFG_USE_SEMAPHORES.
  */
 #if !defined(CH_CFG_USE_MAILBOXES)
-#define CH_CFG_USE_MAILBOXES                FALSE
+#define CH_CFG_USE_MAILBOXES                TRUE
 #endif
 
 /**
@@ -332,7 +331,7 @@
  * @note    The default is @p TRUE.
  */
 #if !defined(CH_CFG_USE_MEMCORE)
-#define CH_CFG_USE_MEMCORE                  FALSE
+#define CH_CFG_USE_MEMCORE                  TRUE
 #endif
 
 /**
@@ -346,7 +345,7 @@
  * @note    Mutexes are recommended.
  */
 #if !defined(CH_CFG_USE_HEAP)
-#define CH_CFG_USE_HEAP                     FALSE
+#define CH_CFG_USE_HEAP                     TRUE
 #endif
 
 /**
@@ -357,7 +356,7 @@
  * @note    The default is @p TRUE.
  */
 #if !defined(CH_CFG_USE_MEMPOOLS)
-#define CH_CFG_USE_MEMPOOLS                 FALSE
+#define CH_CFG_USE_MEMPOOLS                 TRUE
 #endif
 
 /**
@@ -368,7 +367,7 @@
  * @note    The default is @p TRUE.
  */
 #if !defined(CH_CFG_USE_OBJ_FIFOS)
-#define CH_CFG_USE_OBJ_FIFOS                FALSE
+#define CH_CFG_USE_OBJ_FIFOS                TRUE
 #endif
 
 /**
@@ -381,7 +380,7 @@
  * @note    Requires @p CH_CFG_USE_HEAP and/or @p CH_CFG_USE_MEMPOOLS.
  */
 #if !defined(CH_CFG_USE_DYNAMIC)
-#define CH_CFG_USE_DYNAMIC                  FALSE
+#define CH_CFG_USE_DYNAMIC                  TRUE
 #endif
 
 /** @} */
@@ -401,7 +400,7 @@
  * @note    The default is @p FALSE.
  */
 #if !defined(CH_CFG_USE_FACTORY)
-#define CH_CFG_USE_FACTORY                  FALSE
+#define CH_CFG_USE_FACTORY                  TRUE
 #endif
 
 /**
@@ -474,7 +473,7 @@
  * @note    The default is @p FALSE.
  */
 #if !defined(CH_DBG_SYSTEM_STATE_CHECK)
-#define CH_DBG_SYSTEM_STATE_CHECK           FALSE
+#define CH_DBG_SYSTEM_STATE_CHECK           TRUE
 #endif
 
 /**
@@ -485,7 +484,7 @@
  * @note    The default is @p FALSE.
  */
 #if !defined(CH_DBG_ENABLE_CHECKS)
-#define CH_DBG_ENABLE_CHECKS                FALSE
+#define CH_DBG_ENABLE_CHECKS                TRUE
 #endif
 
 /**
@@ -497,7 +496,7 @@
  * @note    The default is @p FALSE.
  */
 #if !defined(CH_DBG_ENABLE_ASSERTS)
-#define CH_DBG_ENABLE_ASSERTS               FALSE
+#define CH_DBG_ENABLE_ASSERTS               TRUE
 #endif
 
 /**
@@ -507,7 +506,7 @@
  * @note    The default is @p CH_DBG_TRACE_MASK_DISABLED.
  */
 #if !defined(CH_DBG_TRACE_MASK)
-#define CH_DBG_TRACE_MASK                   CH_DBG_TRACE_MASK_DISABLED
+#define CH_DBG_TRACE_MASK                   CH_DBG_TRACE_MASK_ALL
 #endif
 
 /**
@@ -698,11 +697,11 @@
  */
 #define SHELL_CMD_EXIT_ENABLED TRUE
 #define SHELL_CMD_INFO_ENABLED TRUE
-#define SHELL_CMD_ECHO_ENABLED FALSE
+#define SHELL_CMD_ECHO_ENABLED TRUE
 #define SHELL_CMD_SYSTIME_ENABLED FALSE
-#define SHELL_CMD_MEM_ENABLED FALSE
+#define SHELL_CMD_MEM_ENABLED TRUE
 #define SHELL_CMD_THREADS_ENABLED TRUE
-#define SHELL_CMD_TEST_ENABLED FALSE
+//#define SHELL_CMD_TEST_ENABLED FALSE
 
 #endif  /* CHCONF_H */
 

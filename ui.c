@@ -2335,7 +2335,7 @@ static const EXTConfig extcfg = {
 };
 #endif
 static const GPTConfig gpt3cfg = {
-  1000,    /* 1kHz timer clock.*/
+  12000,  /* 15kHz timer clock.*/
   NULL,   /* Timer callback.*/
   0x0020, /* CR2:MMS=02 to output TRGO */
   0

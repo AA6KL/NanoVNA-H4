@@ -19,6 +19,7 @@ https://www.playembedded.org/blog/debugging-stm32-chibistudio/
 cp hal_adc_lld.c.fixed ./ChibiOS/os/hal/ports/STM32/LLD/ADCv3/hal_adc_lld.c
 
 #Merge with upstream 
+#git remote add upstream  <URL>
 git fetch upstream
 git merge upstream/master
 -> git stash and merge, resolve conflicts before commit.
