@@ -1074,15 +1074,15 @@ static void draw_marker(int w, int h, int x, int y, int c, int ch)
       int y0 = y - j;
       int cc = c;
       if (j <= (FONT_HEIGHT+3) && j > 2 && i >= -1 && i <= 3) {
-       #if !(defined(ILI9488) || defined(ILI9486) || defined(ST7796S))
+        #if !(defined(ILI9488) || defined(ILI9486) || defined(ST7796S))
         uint8_t bits = x5x7_bits[(ch * FONT_HEIGHT) + ((FONT_HEIGHT+3)-j)];
-        if (bits & (0x80>>(i+1)))
-          cc = 0;
-       #else
+	if (bits & (0x80>>(i+1)))
+	  cc = 0;
+	#else
         uint16_t bits = x7x13b_bits[(ch * FONT_HEIGHT) + ((FONT_HEIGHT+3)-j)];
-        if (bits & (0x8000>>(i+2)))
-          cc = 0;
-       #endif
+	if (bits & (0x8000>>(i+2)))
+	  cc = 0;
+        #endif
       }
 
       if (y0 >= 0 && y0 < h && x0 >= 0 && x0 < w)
@@ -1244,15 +1244,15 @@ static void markmap_marker(int marker)
         int m = x>>5;
         int n = y>>5;
         mark_map(m, n);
-        if ((x&31) < 6)
+        if ((x&31) < (FONT_HEIGHT+5)/2)
             mark_map(m-1, n);
-        if ((x&31) > 32-6)
+        if ((x&31) > 32-(FONT_HEIGHT+5)/2)
             mark_map(m+1, n);
-        if ((y&31) < 12) {
+        if ((y&31) < (FONT_HEIGHT+5)) {
             mark_map(m, n-1);
-            if ((x&31) < 6)
+            if ((x&31) < (FONT_HEIGHT+5)/2)
                 mark_map(m-1, n-1);
-            if ((x&31) > 32-6)
+            if ((x&31) > 32-(FONT_HEIGHT+5)/2)
                 mark_map(m+1, n-1);
         }
     }
