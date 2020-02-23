@@ -106,8 +106,8 @@
 #define GPIOC_PIN12                 12U
 #define GPIOC_LED                   13U
 #define GPIOC_PC13                  13U
-#define GPIOC_PIN14                 14U
-#define GPIOC_PIN15                 15U
+#define GPIOC_BLE_EN                14U
+#define GPIOC_BLE_STATE             15U
 
 #define GPIOF_PIN0                  0U
 #define GPIOF_PIN1                  1U
@@ -162,6 +162,8 @@
 #define LINE_Codec_Reset_N          PAL_LINE(GPIOB, 14U)
 #define LINE_I2S_DOUT               PAL_LINE(GPIOB, 15U)
 #define LINE_PC13                   PAL_LINE(GPIOC, 13U)
+#define LINE_BLE_EN                 PAL_LINE(GPIOC, 14U)
+#define LINE_BLE_STATE              PAL_LINE(GPIOC, 15U)
 
 /*===========================================================================*/
 /* Driver pre-compile time settings.                                         */
@@ -452,8 +454,8 @@
  * PC11 - PIN11                     (alternate 5).
  * PC12 - PIN12                     (alternate 5).
  * PC13 - PC13                      (output pushpull minimum).
- * PC14 - PIN14                     (input floating).
- * PC15 - PIN15                     (input floating).
+ * PC14 - BLE_EN                    (output pullup).
+ * PC15 - BLE_STATE                 (input pulldown).
  */
 #define VAL_GPIOC_MODER             (PIN_MODE_ALTERNATE(GPIOC_PIN0) |       \
                                      PIN_MODE_ALTERNATE(GPIOC_PIN1) |       \
@@ -469,8 +471,8 @@
                                      PIN_MODE_ALTERNATE(GPIOC_PIN11) |      \
                                      PIN_MODE_ALTERNATE(GPIOC_PIN12) |      \
                                      PIN_MODE_OUTPUT(GPIOC_PC13) |          \
-                                     PIN_MODE_INPUT(GPIOC_PIN14) |          \
-                                     PIN_MODE_INPUT(GPIOC_PIN15))
+                                     PIN_MODE_OUTPUT(GPIOC_BLE_EN) |          \
+                                     PIN_MODE_INPUT(GPIOC_BLE_STATE))
 #define VAL_GPIOC_OTYPER            (PIN_OTYPE_PUSHPULL(GPIOC_PIN0) |       \
                                      PIN_OTYPE_PUSHPULL(GPIOC_PIN1) |       \
                                      PIN_OTYPE_PUSHPULL(GPIOC_PIN2) |       \
@@ -485,8 +487,8 @@
                                      PIN_OTYPE_PUSHPULL(GPIOC_PIN11) |      \
                                      PIN_OTYPE_PUSHPULL(GPIOC_PIN12) |      \
                                      PIN_OTYPE_PUSHPULL(GPIOC_PC13) |       \
-                                     PIN_OTYPE_PUSHPULL(GPIOC_PIN14) |      \
-                                     PIN_OTYPE_PUSHPULL(GPIOC_PIN15))
+                                     PIN_OTYPE_PUSHPULL(GPIOC_BLE_EN) |      \
+                                     PIN_OTYPE_PUSHPULL(GPIOC_BLE_STATE))
 #define VAL_GPIOC_OSPEEDR           (PIN_OSPEED_VERYLOW(GPIOC_PIN0) |       \
                                      PIN_OSPEED_VERYLOW(GPIOC_PIN1) |       \
                                      PIN_OSPEED_VERYLOW(GPIOC_PIN2) |       \
@@ -501,8 +503,8 @@
                                      PIN_OSPEED_VERYLOW(GPIOC_PIN11) |      \
                                      PIN_OSPEED_VERYLOW(GPIOC_PIN12) |      \
                                      PIN_OSPEED_VERYLOW(GPIOC_PC13) |       \
-                                     PIN_OSPEED_HIGH(GPIOC_PIN14) |         \
-                                     PIN_OSPEED_HIGH(GPIOC_PIN15))
+                                     PIN_OSPEED_HIGH(GPIOC_BLE_EN) |         \
+                                     PIN_OSPEED_VERYLOW(GPIOC_BLE_STATE))
 #define VAL_GPIOC_PUPDR             (PIN_PUPDR_FLOATING(GPIOC_PIN0) |       \
                                      PIN_PUPDR_FLOATING(GPIOC_PIN1) |       \
                                      PIN_PUPDR_FLOATING(GPIOC_PIN2) |       \
@@ -517,8 +519,8 @@
                                      PIN_PUPDR_FLOATING(GPIOC_PIN11) |      \
                                      PIN_PUPDR_FLOATING(GPIOC_PIN12) |      \
                                      PIN_PUPDR_FLOATING(GPIOC_PC13) |       \
-                                     PIN_PUPDR_FLOATING(GPIOC_PIN14) |      \
-                                     PIN_PUPDR_FLOATING(GPIOC_PIN15))
+                                     PIN_PUPDR_PULLUP(GPIOC_BLE_EN) |      \
+                                     PIN_PUPDR_PULLDOWN(GPIOC_BLE_STATE))
 #define VAL_GPIOC_ODR               (PIN_ODR_LOW(GPIOC_PIN0) |              \
                                      PIN_ODR_LOW(GPIOC_PIN1) |              \
                                      PIN_ODR_LOW(GPIOC_PIN2) |              \
@@ -533,8 +535,8 @@
                                      PIN_ODR_LOW(GPIOC_PIN11) |             \
                                      PIN_ODR_LOW(GPIOC_PIN12) |             \
                                      PIN_ODR_LOW(GPIOC_PC13) |              \
-                                     PIN_ODR_HIGH(GPIOC_PIN14) |            \
-                                     PIN_ODR_HIGH(GPIOC_PIN15))
+                                     PIN_ODR_HIGH(GPIOC_BLE_EN) |            \
+                                     PIN_ODR_LOW(GPIOC_BLE_STATE))
 #define VAL_GPIOC_AFRL              (PIN_AFIO_AF(GPIOC_PIN0, 5U) |          \
                                      PIN_AFIO_AF(GPIOC_PIN1, 5U) |          \
                                      PIN_AFIO_AF(GPIOC_PIN2, 5U) |          \
@@ -549,8 +551,8 @@
                                      PIN_AFIO_AF(GPIOC_PIN11, 5U) |         \
                                      PIN_AFIO_AF(GPIOC_PIN12, 5U) |         \
                                      PIN_AFIO_AF(GPIOC_PC13, 0U) |          \
-                                     PIN_AFIO_AF(GPIOC_PIN14, 0U) |         \
-                                     PIN_AFIO_AF(GPIOC_PIN15, 0U))
+                                     PIN_AFIO_AF(GPIOC_BLE_EN, 0U) |         \
+                                     PIN_AFIO_AF(GPIOC_BLE_STATE, 0U))
 
 /*
  * GPIOD setup:

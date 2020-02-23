@@ -160,3 +160,34 @@ typedef struct {
 #define ADC_CCR_CKMODE_AHB_DIV2         (2 << 16)
 #define ADC_CCR_CKMODE_AHB_DIV4         (3 << 16)
 
+USART/Serial/SD1:
+https://www.playembedded.org/blog/stm32-usart-chibios-serial/
+https://www.playembedded.org/blog/vcp-stm32-chibios/
+
+Bluetooth connection in Ubuntu
+HC-05  MAC: 98:D3:32:21:B5:AE
+Reference: https://askubuntu.com/questions/248817/how-to-i-connect-a-raw-serial-terminal-to-a-bluetooth-connection
+sudo apt-get install bluez bluez-tools
+sudo bluetoothctl
+#pair <MAC address>
+#pair 98:D3:32:21:B5:AE
+# connect  98:D3:32:21:B5:AE
+#ctrl-D
+sudo rfcomm connect /dev/rfcomm0 <MAC address> 1 &
+sudo rfcomm connect /dev/rfcomm0 98:D3:32:21:B5:AE 1 &
+or sudo rfcomm connect /dev/rfcomm0 98:D3:32:21:B5:AE 1
+and use Ctrl-C to hangup
+sudo screen /dev/rfcomm0
+or
+sudo minicom -D /dev/rfcomm0
+or
+Python download this script https://sourceforge.net/p/pyserial/code/HEAD/tree/trunk/pyserial/serial/tools/miniterm.py
+       chmod +x miniterm.py
+       sudo ./miniterm.py /dev/rfcomm0
+If necessary, do "reset" after entering shell
+
+Use PyBlueZ to connect to Bluetooth
+    https://pybluez.github.io/   https://github.com/pybluez/pybluez   https://pypi.org/project/PyBluez-win10/
+    https://stackoverflow.com/questions/37465157/pairing-bluetooth-devices-with-passkey-password-in-python-rfcomm-linux
+Use Bluetooth Serial Terminal for Windows 10 for Bluetooth (HC-05)
+Use AirTerminal or BLE Terminal app for iOS for BLE (HC-08 or JDY-32)

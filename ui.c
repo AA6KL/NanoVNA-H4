@@ -714,6 +714,9 @@ show_logo(void)
       ili9341_drawstring_7x13("Licensed under GPL. See: https://github.com/ttrftech/NanoVNA", x, y += 15, 0xffff, 0x0000);
       ili9341_drawstring_7x13("Version: " VERSION, x, y += 15, 0xffff, 0x0000);
       ili9341_drawstring_7x13("Build Time: " __DATE__ " - " __TIME__, x, y += 15, 0xffff, 0x0000);
+      #ifdef URL
+      ili9341_drawstring_7x13("URL: " URL, x, y += 15, 0xffff, 0x0000);
+      #endif
 
       y += 10;
       ili9341_drawstring_7x13("Kernel: " CH_KERNEL_VERSION, x, y += 15, 0xffff, 0x0000);

@@ -59,9 +59,17 @@ endif
 # Build global options
 ##############################################################################
 
+ifeq ($(USE_BLE),TRUE)
+  USE_BLE_OPT= -DUSE_BLE
+else
+  USE_BLE_OPT= 
+endif
+
 ifeq ($(VERSION),)
   VERSION="$(shell git describe --tags)"
 endif
+
+URL="$(shell git config -l|grep url|sed 's/remote\.origin\.url=//')"
 
 ##############################################################################
 # Architecture or project specific options
@@ -246,8 +254,7 @@ CPPWARN = -Wall -Wextra -Wundef
 
 # List all user C define here, like -D_DEBUG=1
 ifeq ($(TARGET),F303)
- UDEFS = -DSHELL_CMD_TEST_ENABLED=FALSE -DVERSION=\"$(VERSION)\" -DNANOVNA_F303 -DST7796S -DLED_OFF
-#-DLED_OFF
+ UDEFS = -DSHELL_CMD_TEST_ENABLED=FALSE -DVERSION=\"$(VERSION)\" -DURL=\"$(URL)\" -DNANOVNA_F303 -DST7796S $(USE_BLE_OPT)
 else
  UDEFS = -DSHELL_CMD_TEST_ENABLED=FALSE -DSHELL_CMD_MEM_ENABLED=FALSE -DARM_MATH_CM0 -DVERSION=\"$(VERSION)\" 
 endif
@@ -270,7 +277,7 @@ dfu:
 	-@printf "reset dfu\r" >/dev/cu.usbmodem401
 
 gen_release: 
-	./gen_dfu.sh
+	./gen_dfu.sh $(VERSION)
 
 TAGS: Makefile
 ifeq ($(TARGET),F303)

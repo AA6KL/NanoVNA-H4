@@ -2207,6 +2207,12 @@ static const ShellConfig shell_cfg1 =
     .sc_commands = commands
 };
 
+static const ShellConfig shell_cfgSerial =
+{
+    .sc_channel  = (BaseSequentialStream *)&SD1,
+    .sc_commands = commands
+};
+
 static const I2CConfig i2ccfg = {
 #ifdef NANOVNA_F303
 	.timingr  = STM32_TIMINGR_PRESC(8U)  |            /* 72MHz/9 = 8MHz I2CCLK.           */
@@ -2309,7 +2315,28 @@ int main(void)
     chThdSetPriority(HIGHPRIO);
     chThdCreateStatic(waThread1, sizeof(waThread1), NORMALPRIO, Thread1, NULL);
 
+    /* Activates the serial driver using the driver default configuration.
+       */
+    #ifdef USE_BLE
+    palSetLineMode(LINE_BLE_STATE, PAL_MODE_INPUT_PULLDOWN );
+    palSetLineMode(LINE_BLE_EN, PAL_MODE_OUTPUT_PUSHPULL );
+    palClearLine(LINE_BLE_EN );  // Bring BLE out of AT command mode to normal mode
+    sdStart(&SD1, NULL);
+    #endif
+
+    //chThdCreateStatic(waThreadBLE, sizeof(waThreadBLE), NORMALPRIO + 1, ThreadBLE, NULL);
+
     while (1) {
+     #ifdef USE_BLE
+        // if (palReadLine(LINE_BLE_STATE)) {  // BLE connected
+        if (1) {
+            thread_t *shelltp = chThdCreateStatic(
+                waThread2, sizeof(waThread2),
+                NORMALPRIO + 1,
+                shellThread, (void*)&shell_cfgSerial);
+            chThdWait(shelltp);               /* Waiting termination.             */
+        }
+      #else
         if (SDU1.config->usbp->state == USB_ACTIVE) {
             thread_t *shelltp = chThdCreateStatic(
                 waThread2, sizeof(waThread2),
@@ -2317,6 +2344,7 @@ int main(void)
                 shellThread, (void*)&shell_cfg1);
             chThdWait(shelltp);               /* Waiting termination.             */
         }
+      #endif
         chThdSleepMilliseconds(1000);
     }
 }
