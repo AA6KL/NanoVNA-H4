@@ -7,7 +7,6 @@
 ifeq ($(TARGET),)
   TARGET = F303
 endif
-TARGET=F303
 
 # Compiler options here.
 ifeq ($(USE_OPT),)
@@ -59,10 +58,10 @@ endif
 # Build global options
 ##############################################################################
 
-ifeq ($(USE_BLE),TRUE)
-  USE_BLE_OPT= -DUSE_BLE
+ifeq ($(USE_UART),TRUE)
+  USE_UART_OPT= -DUSE_UART
 else
-  USE_BLE_OPT= 
+  USE_UART_OPT= 
 endif
 
 ifeq ($(VERSION),)
@@ -78,18 +77,18 @@ URL="$(shell git config -l|grep url|sed 's/remote\.origin\.url=//')"
 # Stack size to be allocated to the Cortex-M process stack. This stack is
 # the stack used by the main() thread.
 ifeq ($(USE_PROCESS_STACKSIZE),)
-  USE_PROCESS_STACKSIZE = 0x400
+  USE_PROCESS_STACKSIZE = 0x200
 endif
 
 # Stack size to the allocated to the Cortex-M main/exceptions stack. This
 # stack is used for processing interrupts and exceptions.
 ifeq ($(USE_EXCEPTIONS_STACKSIZE),)
-  USE_EXCEPTIONS_STACKSIZE = 0x400
+  USE_EXCEPTIONS_STACKSIZE = 0x200
 endif
 
 # Enables the use of FPU (no, softfp, hard).
 ifeq ($(USE_FPU),)
-  USE_FPU = no
+  USE_FPU = hard
 endif
 
 # FPU-related options.
@@ -254,7 +253,7 @@ CPPWARN = -Wall -Wextra -Wundef
 
 # List all user C define here, like -D_DEBUG=1
 ifeq ($(TARGET),F303)
- UDEFS = -DSHELL_CMD_TEST_ENABLED=FALSE -DVERSION=\"$(VERSION)\" -DURL=\"$(URL)\" -DNANOVNA_F303 -DST7796S $(USE_BLE_OPT)
+ UDEFS = -DSHELL_CMD_TEST_ENABLED=FALSE -DVERSION=\"$(VERSION)\" -DURL=\"$(URL)\" -DNANOVNA_F303 -DST7796S $(USE_UART_OPT)
 else
  UDEFS = -DSHELL_CMD_TEST_ENABLED=FALSE -DSHELL_CMD_MEM_ENABLED=FALSE -DARM_MATH_CM0 -DVERSION=\"$(VERSION)\" 
 endif

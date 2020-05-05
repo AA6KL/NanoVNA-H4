@@ -169,6 +169,7 @@ HC-05  MAC: 98:D3:32:21:B5:AE
 Reference: https://askubuntu.com/questions/248817/how-to-i-connect-a-raw-serial-terminal-to-a-bluetooth-connection
 sudo apt-get install bluez bluez-tools
 sudo bluetoothctl
+#scan on
 #pair <MAC address>
 #pair 98:D3:32:21:B5:AE
 # connect  98:D3:32:21:B5:AE

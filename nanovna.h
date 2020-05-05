@@ -156,7 +156,7 @@ extern void ui_init(void);
 extern void ui_process(void);
 
 enum { OP_NONE = 0, OP_LEVER, OP_TOUCH, OP_FREQCHANGE };
-extern uint8_t operation_requested;
+extern volatile uint8_t operation_requested;
 
 /*
  * dsp.c
@@ -454,8 +454,6 @@ extern uistat_t uistat;
 void ui_init(void);
 void ui_show(void);
 void ui_hide(void);
-
-extern uint8_t operation_requested;
 
 void touch_start_watchdog(void);
 void touch_position(int *x, int *y);

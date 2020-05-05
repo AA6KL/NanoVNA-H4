@@ -2317,7 +2317,7 @@ int main(void)
 
     /* Activates the serial driver using the driver default configuration.
        */
-    #ifdef USE_BLE
+    #ifdef USE_UART
     palSetLineMode(LINE_BLE_STATE, PAL_MODE_INPUT_PULLDOWN );
     palSetLineMode(LINE_BLE_EN, PAL_MODE_OUTPUT_PUSHPULL );
     palClearLine(LINE_BLE_EN );  // Bring BLE out of AT command mode to normal mode
@@ -2327,7 +2327,7 @@ int main(void)
     //chThdCreateStatic(waThreadBLE, sizeof(waThreadBLE), NORMALPRIO + 1, ThreadBLE, NULL);
 
     while (1) {
-     #ifdef USE_BLE
+     #ifdef USE_UART
         // if (palReadLine(LINE_BLE_STATE)) {  // BLE connected
         if (1) {
             thread_t *shelltp = chThdCreateStatic(

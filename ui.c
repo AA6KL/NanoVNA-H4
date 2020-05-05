@@ -66,7 +66,7 @@ static volatile systime_t last_button_down_ticks;
 static volatile systime_t last_button_repeat_ticks;
 static volatile int8_t inhibit_until_release = FALSE;
 
-uint8_t operation_requested = OP_NONE;
+volatile uint8_t operation_requested = OP_NONE;
 
 int8_t previous_marker = -1;
 
