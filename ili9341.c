@@ -114,7 +114,7 @@ static void spi_init(void)
     STM32_DMA_CR_TEIE |
     STM32_DMA_CR_PSIZE_HWORD |
     STM32_DMA_CR_MSIZE_HWORD;
-  dmaStreamAllocate(dmatx,
+  dmaStreamAlloc(dmatx,
                     STM32_SPI_SPI1_IRQ_PRIORITY,
                     (stm32_dmaisr_t)spi_lld_serve_tx_interrupt,
                     NULL);

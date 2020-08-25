@@ -109,7 +109,9 @@ PROJECT = ch
 
 # Imported source files and paths
 #CHIBIOS = ../ChibiOS-RT
-CHIBIOS = ../ChibiOS_18.2.2
+#CHIBIOS = ../ChibiOS_18.2.2
+CHIBIOS = ../ChibiOS_20.3.2
+#CHIBIOS = ../ChibiOS
 
 PROJ = .
 
@@ -122,8 +124,8 @@ include $(CHIBIOS)/os/hal/hal.mk
 include $(CHIBIOS)/os/hal/ports/STM32/STM32F3xx/platform.mk
 include NANOVNA_STM32_F303/board.mk
 
-#include $(CHIBIOS)/os/hal/osal/rt-nil/osal.mk
-include $(CHIBIOS)/os/hal/osal/rt/osal.mk
+include $(CHIBIOS)/os/hal/osal/rt-nil/osal.mk
+#include $(CHIBIOS)/os/hal/osal/rt/osal.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
 include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
@@ -265,8 +267,8 @@ ULIBS = -lm
 # End of user defines
 ##############################################################################
 
-#RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/mk
-RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC
+RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/mk
+#RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC
 include $(RULESPATH)/rules.mk
 
 flash: build/ch.bin

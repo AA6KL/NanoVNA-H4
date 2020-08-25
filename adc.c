@@ -33,16 +33,16 @@ static adcsample_t samplesVBAT[ADC_GRP_NUM_CHANNELS_VBAT*ADC_GRP_BUF_DEPTH_VBAT]
 static adcsample_t samples[2];
 
 static const ADCConversionGroup adcgrpcfgVBAT = {
-  FALSE,
-  ADC_GRP_NUM_CHANNELS_VBAT,
-  NULL,
-  NULL,
+  .circular     = FALSE,
+  .num_channels = ADC_GRP_NUM_CHANNELS_VBAT,
+  .end_cb       = NULL,
+  .error_cb     = NULL,
   //  ADC_CFGR_CONT | ADC_CFGR1_RES_12BIT,  /* CFGR1 */
-  ADC_CFGR_CONT | ADC_CFGR1_RES_12BIT,       /* CFGR1 */
-  ADC_TR(0, 4095),              /* TR */
-  {0,
+  .cfgr         = ADC_CFGR_CONT | ADC_CFGR_RES_12BITS,       /* CFGR1 */
+  .tr1          = ADC_TR(0, 4095),              /* TR */
+  .smpr         = {0,
    ADC_SMPR2_SMP_AN16(ADC_SMPR_SMP_TIME) | ADC_SMPR2_SMP_AN17(ADC_SMPR_SMP_TIME) | ADC_SMPR2_SMP_AN18(ADC_SMPR_SMP_TIME)},                        /* SMPR */
-  {ADC_SQR1_SQ1_N(ADC_CHANNEL_IN17) | ADC_SQR1_SQ2_N(ADC_CHANNEL_IN18)
+  .sqr          = {ADC_SQR1_SQ1_N(ADC_CHANNEL_IN17) | ADC_SQR1_SQ2_N(ADC_CHANNEL_IN18)
    | ADC_SQR1_SQ3_N(ADC_CHANNEL_IN16) ,
    0,0,0}                       /* CHSELR */
 };
@@ -54,19 +54,19 @@ adcerrorcallback_t adcerrorcallback(ADCDriver *adcp, adcerror_t err);
 static adcsample_t samplesTouch[ADC_GRP_NUM_CHANNELS_TOUCH*ADC_GRP_BUF_DEPTH_TOUCH];
 
 static ADCConversionGroup adcgrpcfgTouch = {
-  TRUE,
-  ADC_GRP_NUM_CHANNELS_TOUCH,
-  NULL,                         /* adccallback_touch */
-  adcerrorcallback,             /* adcerrorcallback_touch */
+  .circular     = TRUE,
+  .num_channels = ADC_GRP_NUM_CHANNELS_TOUCH,
+  .end_cb       = NULL,                         /* adccallback_touch */
+  .error_cb     = adcerrorcallback,             /* adcerrorcallback_touch */
                                 /* CFGR    */
-  ADC_CFGR_EXTEN_0     // rising edge of external trigger
+  .cfgr         = ADC_CFGR_EXTEN_0     // rising edge of external trigger
   | ADC_CFGR_EXTSEL_2  // TIM3_TRGO
   | ADC_CFGR_AWD1EN
   ,
-  ADC_TR(0, TOUCH_THRESHOLD),   /* TR1     */
-  {ADC_SMPR1_SMP_AN3(ADC_SMPR_SMP_TIME) | ADC_SMPR1_SMP_AN4(ADC_SMPR_SMP_TIME),
+  .tr1          = ADC_TR(0, TOUCH_THRESHOLD),   /* TR1     */
+  .smpr         = {ADC_SMPR1_SMP_AN3(ADC_SMPR_SMP_TIME) | ADC_SMPR1_SMP_AN4(ADC_SMPR_SMP_TIME),
    0},                        /* SMPR[2] */
-  {                             /* SQR[4]  */
+  .sqr          = {                             /* SQR[4]  */
     ADC_SQR1_SQ1_N(ADC_CHANNEL_IN3) ,
     0,
     0,
@@ -75,15 +75,15 @@ static ADCConversionGroup adcgrpcfgTouch = {
 };
 
 static volatile ADCConversionGroup adcgrpcfgXY = {
-  FALSE,
-  1,
-  NULL,                         /*adccallback_touch */
-  NULL,                         /* adcerrorcallback_touch */
-  ADC_CFGR1_RES_12BIT,          /* CFGR */
-  ADC_TR(0, 0),                 /* TR1     */
-  {ADC_SMPR1_SMP_AN3(ADC_SMPR_SMP_TIME) | ADC_SMPR1_SMP_AN4(ADC_SMPR_SMP_TIME),
+  .circular     = FALSE,
+  .num_channels = 1,
+  .end_cb       = NULL,                         /*adccallback_touch */
+  .error_cb     = NULL,                         /* adcerrorcallback_touch */
+  .cfgr         = ADC_CFGR_RES_12BITS,          /* CFGR */
+  .tr1          = ADC_TR(0, 0),                 /* TR1     */
+  .smpr         = {ADC_SMPR1_SMP_AN3(ADC_SMPR_SMP_TIME) | ADC_SMPR1_SMP_AN4(ADC_SMPR_SMP_TIME),
    0},                        /* SMPR[2] */
-  {                             /* SQR[4]  */
+  .sqr          = {                             /* SQR[4]  */
     ADC_SQR1_SQ1_N(ADC_CHANNEL_IN3) ,
     0,
     0,
